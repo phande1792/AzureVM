@@ -1,0 +1,517 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualMachines_FirstDC_name": {
+            "defaultValue": "FirstDC",
+            "type": "String"
+        },
+        "vaults_SQLBackups_name": {
+            "defaultValue": "SQLBackups",
+            "type": "String"
+        },
+        "networkInterfaces_firstdc448_name": {
+            "defaultValue": "firstdc448",
+            "type": "String"
+        },
+        "publicIPAddresses_FirstDC_ip_name": {
+            "defaultValue": "FirstDC-ip",
+            "type": "String"
+        },
+        "networkSecurityGroups_FirstDC_nsg_name": {
+            "defaultValue": "FirstDC-nsg",
+            "type": "String"
+        },
+        "storageAccounts_azrecoveryservicesrgdiag_name": {
+            "defaultValue": "azrecoveryservicesrgdiag",
+            "type": "String"
+        },
+        "virtualNetworks_az_recoveryservices_rg_vnet_name": {
+            "defaultValue": "az-recoveryservices-rg-vnet",
+            "type": "String"
+        },
+        "securityRules_RDP_name": {
+            "defaultValue": "RDP",
+            "type": "String"
+        },
+        "backupPolicies_DefaultPolicy_name": {
+            "defaultValue": "DefaultPolicy",
+            "type": "String"
+        },
+        "backupPolicies_HourlyLogBackup_name": {
+            "defaultValue": "HourlyLogBackup",
+            "type": "String"
+        },
+        "subnets_default_name": {
+            "defaultValue": "default",
+            "type": "String"
+        },
+        "replicationAlertSettings_defaultAlertSetting_name": {
+            "defaultValue": "defaultAlertSetting",
+            "type": "String"
+        },
+        "virtualMachines_FirstDC_id": {
+            "defaultValue": "/subscriptions/54cfe187-f420-4c65-a35c-aaca46c64478/resourceGroups/az-recoveryservices-rg/providers/Microsoft.Compute/disks/FirstDC_OsDisk_1_ad414c7ae45247f3bb664edb138c5357",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "comments": "Generalized from resource: '/subscriptions/54cfe187-f420-4c65-a35c-aaca46c64478/resourceGroups/az-recoveryservices-rg/providers/Microsoft.Compute/virtualMachines/FirstDC'.",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[parameters('virtualMachines_FirstDC_name')]",
+            "apiVersion": "2018-06-01",
+            "location": "eastus",
+            "tags": {},
+            "scale": null,
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "Standard_DS1_v2"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "2012-R2-Datacenter",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "osType": "Windows",
+                        "name": "[concat(parameters('virtualMachines_FirstDC_name'),'_OsDisk_1_ad414c7ae45247f3bb664edb138c5357')]",
+                        "createOption": "FromImage",
+                        "caching": "ReadWrite",
+                        "managedDisk": {
+                            "storageAccountType": "Standard_LRS",
+                            "id": "[parameters('virtualMachines_FirstDC_id')]"
+                        },
+                        "diskSizeGB": 127
+                    },
+                    "dataDisks": []
+                },
+                "osProfile": {
+                    "computerName": "[parameters('virtualMachines_FirstDC_name')]",
+                    "adminUsername": "phande",
+                    "windowsConfiguration": {
+                        "provisionVMAgent": true,
+                        "enableAutomaticUpdates": true
+                    },
+                    "secrets": [],
+                    "allowExtensionOperations": true
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_firstdc448_name'))]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true,
+                        "storageUri": "[concat('https', '://', parameters('storageAccounts_azrecoveryservicesrgdiag_name'), '.blob.core.windows.net', '/')]"
+                    }
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_firstdc448_name'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_azrecoveryservicesrgdiag_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/54cfe187-f420-4c65-a35c-aaca46c64478/resourceGroups/az-recoveryservices-rg/providers/Microsoft.Network/networkInterfaces/firstdc448'.",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('networkInterfaces_firstdc448_name')]",
+            "apiVersion": "2018-08-01",
+            "location": "eastus",
+            "tags": {},
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "e09dca17-9d28-4ae5-a03e-f963189cda12",
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "etag": "W/\"fc5f1bd7-97a7-4c3f-b9ca-733fe3bb3897\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "privateIPAddress": "10.0.0.4",
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_FirstDC_ip_name'))]"
+                            },
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_az_recoveryservices_rg_vnet_name'), parameters('subnets_default_name'))]"
+                            },
+                            "primary": true,
+                            "privateIPAddressVersion": "IPv4"
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": [],
+                    "appliedDnsServers": [],
+                    "internalDomainNameSuffix": "e1xdkpt1wjluzgyrujtquoy2eg.bx.internal.cloudapp.net"
+                },
+                "macAddress": "00-0D-3A-11-66-FB",
+                "enableAcceleratedNetworking": false,
+                "enableIPForwarding": false,
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_FirstDC_nsg_name'))]"
+                },
+                "primary": true,
+                "tapConfigurations": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_FirstDC_ip_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_az_recoveryservices_rg_vnet_name'), parameters('subnets_default_name'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_FirstDC_nsg_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/54cfe187-f420-4c65-a35c-aaca46c64478/resourceGroups/az-recoveryservices-rg/providers/Microsoft.Network/networkSecurityGroups/FirstDC-nsg'.",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "[parameters('networkSecurityGroups_FirstDC_nsg_name')]",
+            "apiVersion": "2018-08-01",
+            "location": "eastus",
+            "tags": {},
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "d8115330-ef1c-42eb-b88f-716dba677da2",
+                "securityRules": [
+                    {
+                        "name": "RDP",
+                        "etag": "W/\"2bcb052a-3e6c-4148-9d1c-0ad0c0db3dd1\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "protocol": "TCP",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "3389",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 300,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    }
+                ],
+                "defaultSecurityRules": [
+                    {
+                        "name": "AllowVnetInBound",
+                        "etag": "W/\"2bcb052a-3e6c-4148-9d1c-0ad0c0db3dd1\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Allow inbound traffic from all VMs in VNET",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "VirtualNetwork",
+                            "destinationAddressPrefix": "VirtualNetwork",
+                            "access": "Allow",
+                            "priority": 65000,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "AllowAzureLoadBalancerInBound",
+                        "etag": "W/\"2bcb052a-3e6c-4148-9d1c-0ad0c0db3dd1\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Allow inbound traffic from azure load balancer",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "AzureLoadBalancer",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 65001,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "DenyAllInBound",
+                        "etag": "W/\"2bcb052a-3e6c-4148-9d1c-0ad0c0db3dd1\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Deny all inbound traffic",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Deny",
+                            "priority": 65500,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "AllowVnetOutBound",
+                        "etag": "W/\"2bcb052a-3e6c-4148-9d1c-0ad0c0db3dd1\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Allow outbound traffic from all VMs to all VMs in VNET",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "VirtualNetwork",
+                            "destinationAddressPrefix": "VirtualNetwork",
+                            "access": "Allow",
+                            "priority": 65000,
+                            "direction": "Outbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "AllowInternetOutBound",
+                        "etag": "W/\"2bcb052a-3e6c-4148-9d1c-0ad0c0db3dd1\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Allow outbound traffic from all VMs to Internet",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "Internet",
+                            "access": "Allow",
+                            "priority": 65001,
+                            "direction": "Outbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "DenyAllOutBound",
+                        "etag": "W/\"2bcb052a-3e6c-4148-9d1c-0ad0c0db3dd1\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "description": "Deny all outbound traffic",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Deny",
+                            "priority": 65500,
+                            "direction": "Outbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    }
+                ]
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/54cfe187-f420-4c65-a35c-aaca46c64478/resourceGroups/az-recoveryservices-rg/providers/Microsoft.Network/publicIPAddresses/FirstDC-ip'.",
+            "type": "Microsoft.Network/publicIPAddresses",
+            "sku": {
+                "name": "Basic",
+                "tier": "Regional"
+            },
+            "name": "[parameters('publicIPAddresses_FirstDC_ip_name')]",
+            "apiVersion": "2018-08-01",
+            "location": "eastus",
+            "tags": {},
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "a2309a3e-b290-4ad0-bc0d-bc5086e458da",
+                "ipAddress": "23.96.42.65",
+                "publicIPAddressVersion": "IPv4",
+                "publicIPAllocationMethod": "Dynamic",
+                "idleTimeoutInMinutes": 4,
+                "ipTags": []
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/54cfe187-f420-4c65-a35c-aaca46c64478/resourceGroups/az-recoveryservices-rg/providers/Microsoft.Network/virtualNetworks/az-recoveryservices-rg-vnet'.",
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[parameters('virtualNetworks_az_recoveryservices_rg_vnet_name')]",
+            "apiVersion": "2018-08-01",
+            "location": "eastus",
+            "tags": {},
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "3e35ee26-b27b-4c57-9b11-a2670a3b1c26",
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "10.0.0.0/24"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "default",
+                        "etag": "W/\"100dadd0-28a6-4a1c-958d-cfcc2e9e7f3a\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "addressPrefix": "10.0.0.0/24",
+                            "delegations": []
+                        }
+                    }
+                ],
+                "virtualNetworkPeerings": [],
+                "enableDdosProtection": false,
+                "enableVmProtection": false
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/54cfe187-f420-4c65-a35c-aaca46c64478/resourceGroups/az-recoveryservices-rg/providers/Microsoft.RecoveryServices/vaults/SQLBackups'.",
+            "type": "Microsoft.RecoveryServices/vaults",
+            "sku": {
+                "name": "RS0",
+                "tier": "Standard"
+            },
+            "name": "[parameters('vaults_SQLBackups_name')]",
+            "apiVersion": "2018-01-10",
+            "location": "eastus",
+            "scale": null,
+            "properties": {},
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/54cfe187-f420-4c65-a35c-aaca46c64478/resourceGroups/az-recoveryservices-rg/providers/Microsoft.Storage/storageAccounts/azrecoveryservicesrgdiag'.",
+            "type": "Microsoft.Storage/storageAccounts",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "Storage",
+            "name": "[parameters('storageAccounts_azrecoveryservicesrgdiag_name')]",
+            "apiVersion": "2018-07-01",
+            "location": "eastus",
+            "tags": {},
+            "scale": null,
+            "properties": {
+                "networkAcls": {
+                    "bypass": "AzureServices",
+                    "virtualNetworkRules": [],
+                    "ipRules": [],
+                    "defaultAction": "Allow"
+                },
+                "supportsHttpsTrafficOnly": false,
+                "encryption": {
+                    "services": {
+                        "file": {
+                            "enabled": true
+                        },
+                        "blob": {
+                            "enabled": true
+                        }
+                    },
+                    "keySource": "Microsoft.Storage"
+                }
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/54cfe187-f420-4c65-a35c-aaca46c64478/resourceGroups/az-recoveryservices-rg/providers/Microsoft.Network/networkSecurityGroups/FirstDC-nsg/securityRules/RDP'.",
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "name": "[concat(parameters('networkSecurityGroups_FirstDC_nsg_name'), '/', parameters('securityRules_RDP_name'))]",
+            "apiVersion": "2018-08-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "protocol": "TCP",
+                "sourcePortRange": "*",
+                "destinationPortRange": "3389",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 300,
+                "direction": "Inbound",
+                "sourcePortRanges": [],
+                "destinationPortRanges": [],
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_FirstDC_nsg_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/54cfe187-f420-4c65-a35c-aaca46c64478/resourceGroups/az-recoveryservices-rg/providers/Microsoft.Network/virtualNetworks/az-recoveryservices-rg-vnet/subnets/default'.",
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "name": "[concat(parameters('virtualNetworks_az_recoveryservices_rg_vnet_name'), '/', parameters('subnets_default_name'))]",
+            "apiVersion": "2018-08-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "addressPrefix": "10.0.0.0/24",
+                "delegations": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_az_recoveryservices_rg_vnet_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/54cfe187-f420-4c65-a35c-aaca46c64478/resourcegroups/az-recoveryservices-rg/providers/Microsoft.RecoveryServices/vaults/SQLBackups/backupPolicies/HourlyLogBackup'.",
+            "type": "Microsoft.RecoveryServices/vaults/backupPolicies",
+            "name": "[concat(parameters('vaults_SQLBackups_name'), '/', parameters('backupPolicies_HourlyLogBackup_name'))]",
+            "apiVersion": "2016-12-01",
+            "scale": null,
+            "properties": {
+                "backupManagementType": "AzureWorkload",
+                "protectedItemsCount": 0
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.RecoveryServices/vaults', parameters('vaults_SQLBackups_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/54cfe187-f420-4c65-a35c-aaca46c64478/resourcegroups/az-recoveryservices-rg/providers/Microsoft.RecoveryServices/vaults/SQLBackups/backupPolicies/DefaultPolicy'.",
+            "type": "Microsoft.RecoveryServices/vaults/backupPolicies",
+            "name": "[concat(parameters('vaults_SQLBackups_name'), '/', parameters('backupPolicies_DefaultPolicy_name'))]",
+            "apiVersion": "2016-12-01",
+            "scale": null,
+            "properties": {
+                "backupManagementType": "AzureIaasVM",
+                "protectedItemsCount": 0
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.RecoveryServices/vaults', parameters('vaults_SQLBackups_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/Subscriptions/54cfe187-f420-4c65-a35c-aaca46c64478/resourceGroups/az-recoveryservices-rg/providers/Microsoft.RecoveryServices/vaults/SQLBackups/replicationAlertSettings/defaultAlertSetting'.",
+            "type": "Microsoft.RecoveryServices/vaults/replicationAlertSettings",
+            "name": "[concat(parameters('vaults_SQLBackups_name'), '/', parameters('replicationAlertSettings_defaultAlertSetting_name'))]",
+            "apiVersion": "2018-01-10",
+            "scale": null,
+            "properties": {
+                "sendToOwners": "DoNotSend",
+                "customEmailAddresses": [],
+                "locale": ""
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.RecoveryServices/vaults', parameters('vaults_SQLBackups_name'))]"
+            ]
+        }
+    ]
+}
